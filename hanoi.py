@@ -48,15 +48,28 @@ def print_towers_color(towers, poles, step, total, max_disks):
     print(f"{BOLD}{CYAN}└────────────────────────────────────────────────────────┘{RESET}")
     
     max_height = max(len(towers[i]) for i in range(len(poles)))
-    base_width = max_disks * 3
-    inner_width = base_width + 2
+    inner_width = max_disks * 3 + 2
+    
+    def make_pole_row(content):
+        return f"│{content}│"
+    
+    def make_box_top():
+        return f"┌{'─' * inner_width}┐"
+    
+    def make_box_bottom():
+        return f"└{'─' * inner_width}┘"
+    
+    def center_text(text, width):
+        left = (width - len(text)) // 2
+        right = width - len(text) - left
+        return ' ' * left + text + ' ' * right
     
     print()
     print("  ", end="")
-    for i, pole in enumerate(poles):
+    for i in range(len(poles)):
         c = colors[i]
         sep = " " if i > 0 else ""
-        print(f"{sep}{c}┌{'─' * inner_width}┐", end="")
+        print(f"{sep}{c}{make_box_top()}", end="")
     print()
     
     for level in range(max_height - 1, -1, -1):
@@ -66,27 +79,29 @@ def print_towers_color(towers, poles, step, total, max_disks):
                 disk = towers[i][level]
                 dc = disk_colors[(disk - 1) % len(disk_colors)]
                 w = disk * 3
-                padding = (base_width - w) // 2
-                content = f"{' ' * padding}{dc}{'█' * w}{RESET}"
+                left = (inner_width - w) // 2
+                right = inner_width - w - left
+                content = f"{' ' * left}{dc}{'█' * w}{RESET}{' ' * right}"
             else:
-                content = ""
+                content = " " * inner_width
             c = colors[i]
             sep = " " if i > 0 else ""
-            line += f"{sep}{c}│{content:^{inner_width}}│"
+            line += f"{sep}{c}{make_pole_row(content)}"
         print(line)
-    
-    name_line = "  "
-    for i, pole in enumerate(poles):
-        c = colors[i]
-        sep = " " if i > 0 else ""
-        name_line += f"{sep}{c}│{BOLD}{pole:^{inner_width}}{RESET}│"
-    print(name_line)
     
     print("  ", end="")
     for i, pole in enumerate(poles):
         c = colors[i]
         sep = " " if i > 0 else ""
-        print(f"{sep}{c}└{'─' * inner_width}┘", end="")
+        name_content = center_text(pole, inner_width)
+        print(f"{sep}{c}{BOLD}{make_pole_row(name_content)}{RESET}", end="")
+    print()
+    
+    print("  ", end="")
+    for i, pole in enumerate(poles):
+        c = colors[i]
+        sep = " " if i > 0 else ""
+        print(f"{sep}{c}{make_box_bottom()}", end="")
     print()
     
     print()
