@@ -49,9 +49,16 @@ def print_towers_color(towers, poles, step, total, max_disks):
     
     max_height = max(len(towers[i]) for i in range(len(poles)))
     base_width = max_disks * 3
-    pole_total_width = base_width + 4
+    inner_width = base_width + 2
     
     print()
+    print("  ", end="")
+    for i, pole in enumerate(poles):
+        c = colors[i]
+        sep = " " if i > 0 else ""
+        print(f"{sep}{c}┌{'─' * inner_width}┐", end="")
+    print()
+    
     for level in range(max_height - 1, -1, -1):
         line = "  "
         for i, pole in enumerate(poles):
@@ -60,24 +67,27 @@ def print_towers_color(towers, poles, step, total, max_disks):
                 dc = disk_colors[(disk - 1) % len(disk_colors)]
                 w = disk * 3
                 padding = (base_width - w) // 2
-                disk_str = f"{' ' * padding}{dc}{'█' * w}{RESET}"
-                line += f"{disk_str:^{pole_total_width}}  "
+                content = f"{' ' * padding}{dc}{'█' * w}{RESET}"
             else:
-                pole_str = f"{CYAN}{BOLD}│{RESET}"
-                line += f"{pole_str:^{pole_total_width}}  "
+                content = ""
+            c = colors[i]
+            sep = " " if i > 0 else ""
+            line += f"{sep}{c}│{content:^{inner_width}}│"
         print(line)
-    
-    base_line = "  "
-    for i, pole in enumerate(poles):
-        c = colors[i]
-        base_line += f"{c}┌{'─' * base_width}┐  "
-    print(base_line)
     
     name_line = "  "
     for i, pole in enumerate(poles):
         c = colors[i]
-        name_line += f"{c}{BOLD}{pole:^{base_width + 2}}  "
+        sep = " " if i > 0 else ""
+        name_line += f"{sep}{c}│{BOLD}{pole:^{inner_width}}{RESET}│"
     print(name_line)
+    
+    print("  ", end="")
+    for i, pole in enumerate(poles):
+        c = colors[i]
+        sep = " " if i > 0 else ""
+        print(f"{sep}{c}└{'─' * inner_width}┘", end="")
+    print()
     
     print()
     
